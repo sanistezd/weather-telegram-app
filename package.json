@@ -1,0 +1,11 @@
+{
+  "name": "telegram-weather-app",
+  "version": "1.0.0",
+  "description": "Weather Web App for Telegram",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

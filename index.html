@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌤️ Weather App</title>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 64px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        #cityInput {
+            width: 100%;
+            padding: 18px 20px;
+            border: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 17px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        #cityInput:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+        
+        #cityInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .city-btn {
+            padding: 14px 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .city-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .main-btn {
+            width: 100%;
+            padding: 20px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .main-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .weather-card {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .weather-icon {
+            font-size: 72px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .temp {
+            font-size: 56px;
+            font-weight: 800;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .city-display {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+        
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 18px;
+            border-radius: 14px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .detail-label {
+            opacity: 0.9;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .detail-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .close-btn {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.8;
+            font-size: 14px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .tg-button {
+            width: 100%;
+            padding: 16px;
+            background: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .tg-button:hover {
+            background: #0077b5;
+        }
+        
+        .telegram-mode {
+            background: linear-gradient(135deg, #0088cc 0%, #0055aa 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🌤️</div>
+            <h1>Weather App</h1>
+            <p>Узнай погоду в любом городе мира</p>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" 
+                   id="cityInput" 
+                   placeholder="Введите город (например: Москва)"
+                   autocomplete="off">
+        </div>
+        
+        <div class="cities-grid">
+            <button class="city-btn" onclick="selectCity('Москва')">Москва</button>
+            <button class="city-btn" onclick="selectCity('Киев')">Киев</button>
+            <button class="city-btn" onclick="selectCity('Лондон')">Лондон</button>
+            <button class="city-btn" onclick="selectCity('Нью-Йорк')">Нью-Йорк</button>
+            <button class="city-btn" onclick="selectCity('Берлин')">Берлин</button>
+            <button class="city-btn" onclick="selectCity('Токио')">Токио</button>
+        </div>
+        
+        <button class="main-btn" onclick="getWeather()">
+            <span>🌡️</span>
+            <span>Узнать погоду</span>
+        </button>
+        
+        <a href="https://t.me/weather_master_real_bot" class="tg-button" target="_blank">
+            <span>📱</span>
+            <span>Открыть в Telegram</span>
+        </a>
+        
+        <div id="weatherCard" class="weather-card">
+            <div class="weather-icon" id="weatherIcon">☀️</div>
+            <div class="temp" id="temperature">24°C</div>
+            <div class="city-display" id="cityDisplay">Москва, Россия</div>
+            
+            <div class="details">
+                <div class="detail-item">
+                    <div class="detail-label">🤔 Ощущается</div>
+                    <div class="detail-value" id="feelsLike">26°C</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">💧 Влажность</div>
+                    <div class="detail-value" id="humidity">65%</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">💨 Ветер</div>
+                    <div class="detail-value" id="windSpeed">5.2 м/с</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">📝 Состояние</div>
+                    <div class="detail-value" id="description">Ясно</div>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button class="action-btn" onclick="updateWeather()">🔄 Обновить</button>
+                <button class="action-btn" onclick="shareWeather()">📤 Поделиться</button>
+            </div>
+            
+            <button class="close-btn" onclick="closeWeather()">✖️ Скрыть погоду</button>
+        </div>
+        
+        <div class="status" id="appStatus">
+            Telegram Web App готов к работе!
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App Detection
+        let isTelegram = false;
+        
+        if (window.Telegram && Telegram.WebApp) {
+            isTelegram = true;
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            document.body.classList.add('telegram-mode');
+            document.getElementById('appStatus').textContent = '✅ Telegram Web App активен';
+        } else {
+            document.getElementById('appStatus').textContent = 'ℹ️ Открой в Telegram для лучшего опыта';
+        }
+        
+        let currentCity = '';
+        
+        // Выбор города
+        function selectCity(city) {
+            document.getElementById('cityInput').value = city;
+            currentCity = city;
+            document.getElementById('cityInput').focus();
+        }
+        
+        // Получить погоду
+        function getWeather() {
+            const cityInput = document.getElementById('cityInput');
+            const city = cityInput.value.trim();
+            
+            if (!city) {
+                alert('Введите название города!');
+                cityInput.focus();
+                return;
+            }
+            
+            currentCity = city;
+            
+            // Показываем загрузку
+            const card = document.getElementById('weatherCard');
+            card.style.display = 'block';
+            card.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+                    <div style="font-size: 18px; font-weight: 600;">Загружаем погоду для<br><b>${city}</b>...</div>
+                </div>
+            `;
+            
+            // Имитация API запроса
+            setTimeout(() => {
+                showWeather(city);
+            }, 800);
+        }
+        
+        // Показать погоду
+        function showWeather(city) {
+            // Мок данные
+            const weatherData = {
+                city: city,
+                country: 'Россия',
+                temp: Math.floor(Math.random() * 30 + 5),
+                feelsLike: Math.floor(Math.random() * 30 + 5),
+                humidity: Math.floor(Math.random() * 50 + 30),
+                windSpeed: (Math.random() * 10 + 2).toFixed(1),
+                description: ['Солнечно', 'Облачно', 'Дождь', 'Снег', 'Туман'][Math.floor(Math.random() * 5)],
+                icon: ['☀️', '☁️', '🌧️', '❄️', '🌫️'][Math.floor(Math.random() * 5)]
+            };
+            
+            // Обновляем UI
+            const card = document.getElementById('weatherCard');
+            card.innerHTML = `
+                <div class="weather-icon">${weatherData.icon}</div>
+                <div class="temp">${weatherData.temp}°C</div>
+                <div class="city-display">${weatherData.city}, ${weatherData.country}</div>
+                
+                <div class="details">
+                    <div class="detail-item">
+                        <div class="detail-label">🤔 Ощущается</div>
+                        <div class="detail-value">${weatherData.feelsLike}°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">💧 Влажность</div>
+                        <div class="detail-value">${weatherData.humidity}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">💨 Ветер</div>
+                        <div class="detail-value">${weatherData.windSpeed} м/с</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">📝 Состояние</div>
+                        <div class="detail-value">${weatherData.description}</div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="action-btn" onclick="updateWeather()">🔄 Обновить</button>
+                    <button class="action-btn" onclick="shareWeather()">📤 Поделиться</button>
+                </div>
+                
+                <button class="close-btn" onclick="closeWeather()">✖️ Скрыть погоду</button>
+            `;
+            
+            // Если в Telegram - отправляем данные
+            if (isTelegram && Telegram.WebApp) {
+                Telegram.WebApp.sendData(JSON.stringify({
+                    city: city,
+                    action: 'weather',
+                    data: weatherData
+                }));
+            }
+        }
+        
+        // Обновить погоду
+        function updateWeather() {
+            if (currentCity) {
+                getWeather();
+            }
+        }
+        
+        // Поделиться
+        function shareWeather() {
+            if (navigator.share) {
+                navigator.share({
+                    title: `Погода в ${currentCity}`,
+                    text: `Сейчас в ${currentCity}: 20°C, солнечно. Проверь в Weather App!`,
+                    url: window.location.href
+                });
+            } else {
+                alert(`Погода в ${currentCity}: 20°C, солнечно`);
+            }
+        }
+        
+        // Скрыть погоду
+        function closeWeather() {
+            document.getElementById('weatherCard').style.display = 'none';
+            document.getElementById('cityInput').value = '';
+            document.getElementById('cityInput').focus();
+        }
+        
+        // Обработка Enter
+        document.getElementById('cityInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') getWeather();
+        });
+        
+        // Автофокус
+        document.getElementById('cityInput').focus();
+        
+        // Если в Telegram - скрываем ссылку
+        if (isTelegram) {
+            document.querySelector('.tg-button').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
