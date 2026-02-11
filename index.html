@@ -368,10 +368,7 @@
             'дніпро': 'Dnipro', 'dnipro': 'Dnipro',
             'лондон': 'London', 'london': 'London',
             'париж': 'Paris', 'paris': 'Paris',
-            'берлін': 'Berlin', 'berlin': 'Berlin',
-            'варшава': 'Warsaw', 'warsaw': 'Warsaw',
-            'прага': 'Prague', 'prague': 'Prague',
-            'відень': 'Vienna', 'vienna': 'Vienna'
+            'берлін': 'Berlin', 'berlin': 'Berlin'
         };
 
         const weekdays = ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пʼятниця', 'Субота'];
@@ -460,7 +457,7 @@
             }
         }
 
-        // ========== ГЕНЕРАЦІЯ ПРОГНОЗУ - ФІНАЛЬНА ВЕРСІЯ ==========
+        // ========== ГЕНЕРАЦІЯ ПРОГНОЗУ - 5 ДНІВ ПОСЛІДОВНО ==========
         function generateForecast(forecastList) {
             const daySelector = document.getElementById('daySelector');
             const daysContainer = document.getElementById('daysContainer');
@@ -468,99 +465,52 @@
             daySelector.innerHTML = '';
             daysContainer.innerHTML = '';
             
-            // ВИЗНАЧАЄМО ЛОКАЛЬНИЙ ЧАС КОРИСТУВАЧА
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);
-            const todayTime = now.getTime();
-            
+            // Групуємо прогнози по днях
             const dailyForecasts = {};
-            
             forecastList.forEach(item => {
                 const date = new Date(item.dt * 1000);
-                date.setHours(0, 0, 0, 0);
-                const dayTime = date.getTime();
                 const dayStr = date.toISOString().split('T')[0];
-                
-                if (dayTime >= todayTime) {
-                    if (!dailyForecasts[dayStr]) {
-                        dailyForecasts[dayStr] = [];
-                    }
-                    dailyForecasts[dayStr].push(item);
+                if (!dailyForecasts[dayStr]) {
+                    dailyForecasts[dayStr] = [];
                 }
+                dailyForecasts[dayStr].push(item);
             });
             
-            const sortedDays = Object.keys(dailyForecasts).sort().slice(0, 5);
+            // Отримуємо СЬОГОДНІ в ЛОКАЛЬНОМУ часі користувача
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             
-            // ВІДСТЕЖУЄМО УНІКАЛЬНІ ДНІ ТИЖНЯ
-            const usedWeekdays = new Set();
-            const validDays = [];
-            
-            sortedDays.forEach(dayStr => {
-                const date = new Date(dayStr + 'T12:00:00');
+            // Створюємо 5 днів ПОСЛІДОВНО від сьогодні
+            for (let i = 0; i < 5; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const dayStr = `${year}-${month}-${day}`;
+                
                 const dayIndex = date.getDay();
-                const dayName = shortWeekdays[dayIndex];
+                const shortDay = shortWeekdays[dayIndex];
+                const dayNumber = date.getDate();
+                const monthName = months[date.getMonth()];
                 
-                if (!usedWeekdays.has(dayName)) {
-                    usedWeekdays.add(dayName);
-                    validDays.push(dayStr);
-                }
-            });
-            
-            // ЯКЩО МЕНШЕ 5 ДНІВ, ДОДАЄМО НЮКЕМ
-            while (validDays.length < 5) {
-                validDays.push('nyukem');
-            }
-            
-            validDays.slice(0, 5).forEach((dayStr, index) => {
+                // КНОПКА ДНЯ
                 const btn = document.createElement('button');
-                btn.className = `day-btn ${index === 0 ? 'active' : ''}`;
-                
-                // ЯКЩО ЦЕ НЮКЕМ
-                if (dayStr === 'nyukem') {
-                    btn.textContent = '✨ Нюкем ✨';
-                } else {
-                    const date = new Date(dayStr + 'T12:00:00');
-                    const dayIndex = date.getDay();
-                    const shortDay = shortWeekdays[dayIndex];
-                    const dayNumber = date.getDate();
-                    const month = months[date.getMonth()];
-                    btn.textContent = `${shortDay} ${dayNumber} ${month}`;
-                }
-                
-                btn.onclick = () => selectDay(index);
+                btn.className = `day-btn ${i === 0 ? 'active' : ''}`;
+                btn.textContent = `${shortDay} ${dayNumber} ${monthName}`;
+                btn.onclick = () => selectDay(i);
                 daySelector.appendChild(btn);
                 
+                // КАРТКА ДНЯ
                 const card = document.createElement('div');
-                card.className = `day-card ${index === 0 ? 'active' : ''}`;
+                card.className = `day-card ${i === 0 ? 'active' : ''}`;
                 
-                if (dayStr === 'nyukem') {
-                    card.innerHTML = `
-                        <div class="day-header">
-                            <span class="day-name">✨ Нюкем ✨</span>
-                            <span class="day-temp">--°</span>
-                        </div>
-                        <div class="day-weather">
-                            <span class="day-icon">✨</span>
-                            <span class="day-desc">Таємничий день</span>
-                        </div>
-                        <div class="day-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Відчувається</div>
-                                <div class="detail-value">--°</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Вітер</div>
-                                <div class="detail-value">-- м/с</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Вологість</div>
-                                <div class="detail-value">--%</div>
-                            </div>
-                        </div>
-                    `;
-                } else {
+                // Шукаємо прогноз для цього дня
+                let forecast = null;
+                if (dailyForecasts[dayStr] && dailyForecasts[dayStr].length > 0) {
+                    // Беремо прогноз на 12:00
                     const dayData = dailyForecasts[dayStr];
-                    
                     let bestForecast = dayData[0];
                     let minDiff = 24;
                     
@@ -573,20 +523,21 @@
                             bestForecast = item;
                         }
                     });
-                    
-                    const date = new Date(bestForecast.dt * 1000);
-                    const dayIndex = date.getDay();
-                    const fullDay = weekdays[dayIndex];
-                    const emoji = getWeatherEmoji(bestForecast.weather[0].id);
-                    const temp = Math.round(bestForecast.main.temp);
-                    const feels = Math.round(bestForecast.main.feels_like);
-                    const wind = bestForecast.wind.speed.toFixed(1);
-                    const humidity = bestForecast.main.humidity;
-                    const desc = capitalize(bestForecast.weather[0].description);
+                    forecast = bestForecast;
+                }
+                
+                if (forecast) {
+                    const fullDayName = weekdays[dayIndex];
+                    const emoji = getWeatherEmoji(forecast.weather[0].id);
+                    const temp = Math.round(forecast.main.temp);
+                    const feels = Math.round(forecast.main.feels_like);
+                    const wind = forecast.wind.speed.toFixed(1);
+                    const humidity = forecast.main.humidity;
+                    const desc = capitalize(forecast.weather[0].description);
                     
                     card.innerHTML = `
                         <div class="day-header">
-                            <span class="day-name">${fullDay}</span>
+                            <span class="day-name">${fullDayName}</span>
                             <span class="day-temp">${temp}°</span>
                         </div>
                         <div class="day-weather">
@@ -608,10 +559,38 @@
                             </div>
                         </div>
                     `;
+                } else {
+                    // Якщо немає прогнозу - показуємо заглушку
+                    const fullDayName = weekdays[dayIndex];
+                    
+                    card.innerHTML = `
+                        <div class="day-header">
+                            <span class="day-name">${fullDayName}</span>
+                            <span class="day-temp">--°</span>
+                        </div>
+                        <div class="day-weather">
+                            <span class="day-icon">⏳</span>
+                            <span class="day-desc">Немає даних</span>
+                        </div>
+                        <div class="day-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Відчувається</div>
+                                <div class="detail-value">--°</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Вітер</div>
+                                <div class="detail-value">-- м/с</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Вологість</div>
+                                <div class="detail-value">--%</div>
+                            </div>
+                        </div>
+                    `;
                 }
                 
                 daysContainer.appendChild(card);
-            });
+            }
         }
 
         function selectDay(index) {
