@@ -3,114 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПОГОДА | WEATHER</title>
+    <title>WEATHER · погода</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background 0.3s ease, color 0.2s ease;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 16px;
+            background: #0b0e14;
+            color: #ffffff;
+            padding: 20px;
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* ТЕМНА ТЕМА */
-        body.dark {
-            background: #0b0e14;
-            color: white;
+        .container {
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        body.dark .card {
-            background: linear-gradient(145deg, #1e222a, #15181f);
-            box-shadow: 0 8px 0 #0a0c10;
-        }
-
-        body.dark .search-input {
-            background: #0b0e14;
-            color: white;
-            border: 1px solid #2a2f38;
-        }
-
-        body.dark .city-tag {
-            background: #0b0e14;
-            color: #8e98a3;
-        }
-
-        body.dark .city-tag:hover,
-        body.dark .city-tag.active {
-            background: #2a7f6e;
-            color: white;
-        }
-
-        body.dark .detail-item {
-            background: #0b0e14;
-        }
-
-        body.dark .time,
-        body.dark .section-title,
-        body.dark .detail-label,
-        body.dark .status {
-            color: #8e98a3;
-        }
-
-        /* СВІТЛА ТЕМА */
+        /* Тема */
         body.light {
-            background: #f5f7fa;
+            background: #f8f9fc;
             color: #1a1e24;
         }
 
         body.light .card {
-            background: linear-gradient(145deg, #ffffff, #f0f2f5);
-            box-shadow: 0 8px 0 #d0d4da;
-            border: 1px solid rgba(0,0,0,0.05);
+            background: #ffffff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
         }
 
         body.light .search-input {
-            background: #ffffff;
+            background: #f0f3f7;
             color: #1a1e24;
-            border: 1px solid #e0e4e9;
-        }
-
-        body.light .city-tag {
-            background: #ffffff;
-            color: #4a525c;
-            border: 1px solid #e0e4e9;
-        }
-
-        body.light .city-tag:hover,
-        body.light .city-tag.active {
-            background: #2a7f6e;
-            color: white;
-            border-color: #2a7f6e;
         }
 
         body.light .detail-item {
-            background: #ffffff;
-            border: 1px solid #e0e4e9;
+            background: #f0f3f7;
         }
 
-        body.light .time,
-        body.light .section-title,
-        body.light .detail-label,
-        body.light .status {
-            color: #6b7280;
-        }
-
-        body.light .balance {
-            background: #e8ecf0;
-            color: #1a1e24;
-        }
-
-        .app {
-            max-width: 380px;
-            margin: 0 auto;
-        }
-
-        /* Хедер */
+        /* Шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -118,106 +56,76 @@
             margin-bottom: 32px;
         }
 
-        .time {
-            font-size: 17px;
-            font-weight: 600;
-        }
-
-        .balance {
-            background: #1e222a;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 600;
+        .logo {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #8e98a3;
         }
 
-        /* Кнопка теми */
         .theme-btn {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
             padding: 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
+            opacity: 0.8;
+            transition: opacity 0.2s;
         }
 
-        body.dark .theme-btn {
-            color: #ffd700;
-        }
-
-        body.light .theme-btn {
-            color: #6b7280;
+        .theme-btn:hover {
+            opacity: 1;
         }
 
         /* Картка погоди */
         .card {
-            border-radius: 30px;
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-
-        .city-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #1e222a;
+            border-radius: 28px;
+            padding: 32px 24px;
             margin-bottom: 20px;
         }
 
         .city {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .weather-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #2a7f6e;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        body.light .weather-link {
-            color: #1e5f4f;
-        }
-
-        .temp-big {
-            font-size: 64px;
+        .temp {
+            font-size: 72px;
             font-weight: 800;
             line-height: 1;
-            margin-bottom: 12px;
+            margin: 16px 0 8px;
         }
 
-        .weather-desc {
-            font-size: 17px;
-            margin-bottom: 24px;
+        .desc {
             display: flex;
             align-items: center;
             gap: 8px;
-            opacity: 0.9;
+            font-size: 18px;
+            color: #8e98a3;
+            margin-bottom: 32px;
         }
 
         /* Деталі */
-        .details-grid {
+        .details {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
-            margin-bottom: 20px;
         }
 
         .detail-item {
+            background: #0b0e14;
             padding: 16px 12px;
-            border-radius: 20px;
+            border-radius: 18px;
             text-align: center;
         }
 
         .detail-label {
             font-size: 13px;
+            color: #8e98a3;
             margin-bottom: 6px;
         }
 
@@ -228,41 +136,40 @@
 
         /* Пошук */
         .search-section {
-            background: transparent;
-            border-radius: 30px;
+            background: #1e222a;
+            border-radius: 28px;
             padding: 24px;
-            margin-bottom: 20px;
         }
 
-        .section-title {
-            font-size: 15px;
+        .search-title {
+            color: #8e98a3;
+            font-size: 14px;
             margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .search-input {
             width: 100%;
+            background: #0b0e14;
             border: none;
-            border-radius: 20px;
-            padding: 16px 20px;
+            border-radius: 18px;
+            padding: 18px 20px;
+            color: #ffffff;
             font-size: 17px;
             margin-bottom: 16px;
         }
 
         .search-input::placeholder {
-            color: #8e98a3;
+            color: #4a525c;
         }
 
         .search-btn {
             width: 100%;
             background: #2a7f6e;
             border: none;
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 18px;
+            padding: 18px;
             color: white;
             font-weight: 700;
             font-size: 17px;
@@ -272,87 +179,76 @@
             gap: 8px;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 6px 0 #1a4f43;
+        }
+
+        .search-btn:hover {
+            background: #1e5f52;
         }
 
         .search-btn:active {
-            transform: translateY(6px);
-            box-shadow: none;
-        }
-
-        /* Швидкі міста */
-        .cities-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .city-tag {
-            padding: 12px 8px;
-            border-radius: 16px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
+            transform: scale(0.98);
         }
 
         /* Статус */
         .status {
             text-align: center;
-            font-size: 13px;
             margin-top: 20px;
-            padding: 16px;
+            color: #8e98a3;
+            font-size: 13px;
+            padding: 8px;
+        }
+
+        /* Світла тема */
+        body.light .card,
+        body.light .search-section {
+            background: #ffffff;
+        }
+
+        body.light .detail-item {
+            background: #f0f3f7;
+        }
+
+        body.light .search-input {
+            background: #f0f3f7;
+            color: #1a1e24;
+        }
+
+        body.light .logo {
+            color: #6b7280;
+        }
+
+        /* Анімація завантаження */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .loading {
-            text-align: center;
-            padding: 40px;
-        }
-
-        /* Український прапор */
-        .ua-flag {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(to bottom, #0057b7 50%, #ffd700 50%);
-            border-radius: 4px;
-            margin-right: 4px;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-            opacity: 0.7;
+            animation: pulse 1.5s ease-in-out infinite;
         }
     </style>
 </head>
 <body class="dark">
-    <div class="app">
-        <!-- Хедер з українським акцентом -->
+    <div class="container">
+        <!-- Шапка -->
         <div class="header">
-            <span class="time" id="currentTime">12:33</span>
-            <div style="display: flex; gap: 8px;">
-                <button class="theme-btn" onclick="toggleTheme()" id="themeToggle">🌙</button>
-                <span class="balance">🇺🇦 Weather UA</span>
+            <div class="logo">
+                <span>🌤️</span>
+                <span>weather</span>
             </div>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeToggle">🌙</button>
         </div>
 
         <!-- Картка погоди -->
         <div class="card" id="weatherCard">
-            <div class="city-row">
-                <span class="city" id="cityName">Київ</span>
-                <span class="weather-link">📎 Погода</span>
-            </div>
-            <div class="temp-big" id="temperature">22°</div>
-            <div class="weather-desc" id="description">
+            <div class="city" id="cityName">Київ</div>
+            <div class="temp" id="temperature">22°</div>
+            <div class="desc" id="description">
                 <span>☀️</span>
                 <span>Сонячно</span>
             </div>
             
-            <div class="details-grid">
+            <div class="details">
                 <div class="detail-item">
                     <div class="detail-label">Відчувається</div>
                     <div class="detail-value" id="feelsLike">20°</div>
@@ -368,58 +264,27 @@
             </div>
         </div>
 
-        <!-- Пошук погоди -->
+        <!-- Пошук — тільки поле та кнопка! -->
         <div class="search-section">
-            <div class="section-title">
-                <span>🌤️</span>
-                <span>ПОГОДА В УКРАЇНІ ТА СВІТІ</span>
-            </div>
-            
-            <input type="text" class="search-input" id="cityInput" placeholder="Введи назву міста..." value="Київ">
-            
+            <div class="search-title">🔍 ПОШУК МІСТА</div>
+            <input 
+                type="text" 
+                class="search-input" 
+                id="cityInput" 
+                placeholder="Наприклад: Київ, Львів, London"
+                value="Київ"
+                autocomplete="off"
+                autofocus
+            >
             <button class="search-btn" onclick="getWeather()">
-                <span>🔍</span>
-                <span>ДІЗНАТИСЬ ПОГОДУ</span>
+                <span>🌤️</span>
+                <span>Отримати погоду</span>
             </button>
-
-            <!-- Швидкі міста України -->
-            <div style="margin-top: 20px; margin-bottom: 10px; color: #8e98a3; font-size: 13px;">
-                🇺🇦 МІСТА УКРАЇНИ
-            </div>
-            <div class="cities-grid">
-                <div class="city-tag active" onclick="selectCity('Kyiv')">Київ</div>
-                <div class="city-tag" onclick="selectCity('Lviv')">Львів</div>
-                <div class="city-tag" onclick="selectCity('Odesa')">Одеса</div>
-                <div class="city-tag" onclick="selectCity('Kharkiv')">Харків</div>
-                <div class="city-tag" onclick="selectCity('Dnipro')">Дніпро</div>
-                <div class="city-tag" onclick="selectCity('Zaporizhzhia')">Запоріжжя</div>
-                <div class="city-tag" onclick="selectCity('Vinnytsia')">Вінниця</div>
-                <div class="city-tag" onclick="selectCity('Poltava')">Полтава</div>
-            </div>
-
-            <!-- Світові міста -->
-            <div style="margin-top: 20px; margin-bottom: 10px; color: #8e98a3; font-size: 13px;">
-                🌍 СВІТОВІ МІСТА
-            </div>
-            <div class="cities-grid">
-                <div class="city-tag" onclick="selectCity('London')">Лондон</div>
-                <div class="city-tag" onclick="selectCity('Paris')">Париж</div>
-                <div class="city-tag" onclick="selectCity('New York')">Нью-Йорк</div>
-                <div class="city-tag" onclick="selectCity('Tokyo')">Токіо</div>
-                <div class="city-tag" onclick="selectCity('Berlin')">Берлін</div>
-                <div class="city-tag" onclick="selectCity('Warsaw')">Варшава</div>
-                <div class="city-tag" onclick="selectCity('Rome')">Рим</div>
-                <div class="city-tag" onclick="selectCity('Barcelona')">Барселона</div>
-            </div>
         </div>
 
-        <!-- Статус та інформація -->
+        <!-- Статус -->
         <div class="status" id="status">
-            📎 Погода Україна · Оновлено щойно
-        </div>
-        
-        <div class="footer">
-            🌤️ Weather Mini App · Зроблено в Україні 🇺🇦
+            🇺🇦 Weather · реальна погода
         </div>
     </div>
 
@@ -436,99 +301,76 @@
         // Перемикання теми
         function toggleTheme() {
             const body = document.body;
-            const themeToggle = document.getElementById('themeToggle');
+            const toggle = document.getElementById('themeToggle');
             
             if (body.classList.contains('dark')) {
                 body.classList.remove('dark');
                 body.classList.add('light');
-                themeToggle.textContent = '☀️';
+                toggle.textContent = '☀️';
                 localStorage.setItem('theme', 'light');
             } else {
                 body.classList.remove('light');
                 body.classList.add('dark');
-                themeToggle.textContent = '🌙';
+                toggle.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
             }
         }
 
-        // Завантажуємо збережену тему
+        // Завантажуємо тему
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.body.classList.add(savedTheme);
         document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
 
-        // Оновлення часу
-        function updateTime() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
-        }
-        updateTime();
-        setInterval(updateTime, 60000);
-
-        // Вибір міста
-        function selectCity(city) {
-            document.getElementById('cityInput').value = city;
-            
-            // Оновлюємо активний клас
-            document.querySelectorAll('.city-tag').forEach(tag => {
-                tag.classList.remove('active');
-                if (tag.textContent.includes(city) || 
-                    (city === 'Kyiv' && tag.textContent === 'Київ') ||
-                    (city === 'Lviv' && tag.textContent === 'Львів') ||
-                    (city === 'Odesa' && tag.textContent === 'Одеса') ||
-                    (city === 'New York' && tag.textContent === 'Нью-Йорк') ||
-                    (city === 'Tokyo' && tag.textContent === 'Токіо')) {
-                    tag.classList.add('active');
-                }
-            });
-            
-            getWeather();
-        }
-
         // Отримати погоду
         async function getWeather() {
             let city = document.getElementById('cityInput').value.trim();
-            if (!city) city = 'Kyiv';
-
-            // Конвертація назв для API
-            let apiCity = city;
-            const cityMap = {
-                'Київ': 'Kyiv',
-                'Львів': 'Lviv',
-                'Одеса': 'Odesa',
-                'Харків': 'Kharkiv',
-                'Дніпро': 'Dnipro',
-                'Запоріжжя': 'Zaporizhzhia',
-                'Вінниця': 'Vinnytsia',
-                'Полтава': 'Poltava',
-                'Лондон': 'London',
-                'Париж': 'Paris',
-                'Нью-Йорк': 'New York',
-                'Токіо': 'Tokyo',
-                'Берлін': 'Berlin',
-                'Варшава': 'Warsaw',
-                'Рим': 'Rome',
-                'Барселона': 'Barcelona'
-            };
-            
-            if (cityMap[city]) {
-                apiCity = cityMap[city];
+            if (!city) {
+                city = 'Kyiv';
+                document.getElementById('cityInput').value = 'Київ';
             }
+
+            // Мапа українських міст
+            const cityMap = {
+                'київ': 'Kyiv', 'kiev': 'Kyiv', 'kyiv': 'Kyiv',
+                'львів': 'Lviv', 'lviv': 'Lviv',
+                'одеса': 'Odesa', 'odesa': 'Odesa', 'odessa': 'Odesa',
+                'харків': 'Kharkiv', 'kharkiv': 'Kharkiv',
+                'дніпро': 'Dnipro', 'dnipro': 'Dnipro',
+                'лондон': 'London', 'london': 'London',
+                'париж': 'Paris', 'paris': 'Paris',
+                'берлін': 'Berlin', 'berlin': 'Berlin',
+                'варшава': 'Warsaw', 'warsaw': 'Warsaw',
+                'прага': 'Prague', 'prague': 'Prague',
+                'відень': 'Vienna', 'vienna': 'Vienna'
+            };
+
+            let searchCity = cityMap[city.toLowerCase()] || city;
             
-            document.getElementById('status').innerHTML = '⏳ Завантаження...';
+            // Статус завантаження
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = '⏳ Завантаження...';
+            statusEl.classList.add('loading');
 
             try {
                 const response = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?q=${apiCity}&appid=${API_KEY}&units=metric&lang=uk`
+                    `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${API_KEY}&units=metric&lang=uk`
                 );
                 
                 if (!response.ok) throw new Error('Місто не знайдено');
                 
                 const data = await response.json();
                 
+                // Відображаємо назву міста українською
+                let displayCity = city;
+                for (let [uk, en] of Object.entries(cityMap)) {
+                    if (en.toLowerCase() === searchCity.toLowerCase()) {
+                        displayCity = uk.charAt(0).toUpperCase() + uk.slice(1);
+                        break;
+                    }
+                }
+                
                 // Оновлюємо UI
-                document.getElementById('cityName').textContent = city;
+                document.getElementById('cityName').textContent = displayCity;
                 document.getElementById('temperature').textContent = `${Math.round(data.main.temp)}°`;
                 document.getElementById('feelsLike').textContent = `${Math.round(data.main.feels_like)}°`;
                 document.getElementById('wind').textContent = `${data.wind.speed} м/с`;
@@ -537,61 +379,53 @@
                 // Емодзі погоди
                 const weatherId = data.weather[0].id;
                 let emoji = '☀️';
-                let desc = data.weather[0].description;
+                let desc = data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1);
                 
-                if (weatherId >= 200 && weatherId < 300) {
-                    emoji = '⛈️';
-                    desc = 'Гроза';
-                } else if (weatherId >= 300 && weatherId < 400) {
-                    emoji = '🌧️';
-                    desc = 'Мряка';
-                } else if (weatherId >= 500 && weatherId < 600) {
-                    emoji = '🌦️';
-                    desc = 'Дощ';
-                } else if (weatherId >= 600 && weatherId < 700) {
-                    emoji = '❄️';
-                    desc = 'Сніг';
-                } else if (weatherId >= 700 && weatherId < 800) {
-                    emoji = '🌫️';
-                    desc = 'Туман';
-                } else if (weatherId === 800) {
-                    emoji = '☀️';
-                    desc = 'Ясно';
-                } else if (weatherId > 800) {
-                    emoji = '☁️';
-                    desc = 'Хмарно';
-                }
+                if (weatherId >= 200 && weatherId < 300) { emoji = '⛈️'; desc = 'Гроза'; }
+                else if (weatherId >= 300 && weatherId < 400) { emoji = '🌧️'; desc = 'Мряка'; }
+                else if (weatherId >= 500 && weatherId < 600) { emoji = '🌦️'; desc = 'Дощ'; }
+                else if (weatherId >= 600 && weatherId < 700) { emoji = '❄️'; desc = 'Сніг'; }
+                else if (weatherId >= 700 && weatherId < 800) { emoji = '🌫️'; desc = 'Туман'; }
+                else if (weatherId === 800) { emoji = '☀️'; desc = 'Ясно'; }
+                else if (weatherId > 800) { emoji = '☁️'; desc = 'Хмарно'; }
                 
                 document.getElementById('description').innerHTML = 
                     `<span>${emoji}</span><span>${desc}</span>`;
                 
-                document.getElementById('status').innerHTML = '📎 Погода Україна · Оновлено щойно';
+                statusEl.innerHTML = '🇺🇦 Weather · оновлено щойно';
+                statusEl.classList.remove('loading');
                 
                 // Відправляємо в Telegram
                 if (window.Telegram?.WebApp) {
                     Telegram.WebApp.sendData(JSON.stringify({
-                        city: city,
+                        city: displayCity,
                         temp: Math.round(data.main.temp),
-                        weather: desc,
-                        country: 'UA'
+                        weather: desc
                     }));
                 }
                 
             } catch (error) {
-                document.getElementById('status').innerHTML = '❌ Місто не знайдено';
-                document.getElementById('cityName').textContent = 'Помилка';
+                statusEl.innerHTML = '❌ Місто не знайдено';
+                statusEl.classList.remove('loading');
+                
+                document.getElementById('cityName').textContent = '—';
                 document.getElementById('temperature').textContent = '--°';
+                document.getElementById('description').innerHTML = 
+                    `<span>❓</span><span>Спробуйте ще</span>`;
             }
         }
 
-        // Enter
+        // Пошук по Enter
         document.getElementById('cityInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') getWeather();
+            if (e.key === 'Enter') {
+                getWeather();
+            }
         });
 
-        // Завантажуємо погоду при старті
+        // Автофокус
         window.onload = () => {
-            selectCity('Kyiv');
+            document.getElementById('cityInput').focus();
+            getWeather();
         };
     </script>
 </body>
