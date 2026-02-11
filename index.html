@@ -6,8 +6,7 @@
     <title>Weather · прогноз</title>
     <style>
         /* ========== СЕНЬЙОРСЬКИЙ ДИЗАЙН ========== */
-        /* Чисто. Професійно. Дорого. */
-        /* Темна/світла тема · Прогноз 5 днів · Перемикання днів */
+        /* Чисто. Професійно. Дорого. Без багів. */
         
         * {
             margin: 0;
@@ -16,7 +15,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             padding: 24px;
             min-height: 100vh;
             display: flex;
@@ -30,7 +29,7 @@
             width: 100%;
         }
 
-        /* ===== ТЕМНА ТЕМА (DEFAULT) ===== */
+        /* ===== ТЕМНА ТЕМА ===== */
         body.dark {
             background: #0a0c0e;
             color: #ffffff;
@@ -44,8 +43,7 @@
             box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
         }
 
-        body.dark .detail-card,
-        body.dark .day-card {
+        body.dark .detail-card {
             background: rgba(255, 255, 255, 0.02);
             border: 0.5px solid rgba(255, 255, 255, 0.02);
         }
@@ -73,9 +71,19 @@
             color: #8dd0be;
         }
 
+        body.dark .day-tab {
+            background: rgba(255, 255, 255, 0.03);
+            color: #b0b4ba;
+        }
+
+        body.dark .day-tab.active {
+            background: #2a7f6e;
+            color: white;
+        }
+
         /* ===== СВІТЛА ТЕМА ===== */
         body.light {
-            background: #f2f5f9;
+            background: #f5f7fa;
             color: #0e1217;
         }
 
@@ -87,8 +95,7 @@
             box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.08);
         }
 
-        body.light .detail-card,
-        body.light .day-card {
+        body.light .detail-card {
             background: #f5f8fc;
             border: 0.5px solid rgba(0, 0, 0, 0.02);
         }
@@ -114,6 +121,16 @@
         body.light .search-label,
         body.light .status {
             color: #6f7885;
+        }
+
+        body.light .day-tab {
+            background: rgba(0, 0, 0, 0.03);
+            color: #4a525c;
+        }
+
+        body.light .day-tab.active {
+            background: #2a7f6e;
+            color: white;
         }
 
         /* ===== ХЕДЕР ===== */
@@ -148,17 +165,6 @@
             border-radius: 50%;
             transition: background 0.2s;
             color: inherit;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        body.dark .theme-toggle {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        body.light .theme-toggle {
-            background: rgba(0, 0, 0, 0.02);
         }
 
         .date-badge {
@@ -174,15 +180,14 @@
             border-radius: 28px;
             padding: 24px;
             margin-bottom: 24px;
-            transition: all 0.2s ease;
         }
 
         .search-label {
             font-size: 13px;
             margin-bottom: 12px;
             display: block;
-            letter-spacing: 0.3px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .search-input {
@@ -198,11 +203,6 @@
         .search-input:focus {
             outline: none;
             border-color: #2a7f6e !important;
-        }
-
-        .search-input::placeholder {
-            color: #8e989f;
-            font-weight: 400;
         }
 
         .search-btn {
@@ -238,7 +238,6 @@
             border-radius: 32px;
             padding: 32px 24px;
             margin-bottom: 24px;
-            transition: all 0.2s ease;
         }
 
         .city-section {
@@ -277,7 +276,6 @@
 
         .weather-icon {
             font-size: 56px;
-            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.1));
         }
 
         .weather-desc {
@@ -297,7 +295,7 @@
             border-bottom-color: rgba(0, 0, 0, 0.04);
         }
 
-        /* ===== ДЕТАЛІ ПОТОЧНОЇ ПОГОДИ ===== */
+        /* ===== ДЕТАЛІ ===== */
         .details-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -308,7 +306,6 @@
             border-radius: 20px;
             padding: 18px 8px;
             text-align: center;
-            transition: all 0.2s ease;
         }
 
         .detail-label {
@@ -323,43 +320,27 @@
         }
 
         /* ===== ПЕРЕМИКАННЯ ДНІВ ===== */
-        /* СЕНЬЙОР-СТАЙЛ: БЕЗ ПОЛЗУНКА, КРАСИВІ КНОПКИ */
         .day-selector {
             display: flex;
             justify-content: space-between;
             gap: 8px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
         }
 
         .day-tab {
             flex: 1;
-            padding: 12px 8px;
-            border-radius: 14px;
-            font-size: 14px;
+            padding: 12px 4px;
+            border-radius: 12px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             text-align: center;
             transition: all 0.2s ease;
             border: none;
-            background: rgba(42, 127, 110, 0.05);
-            color: inherit;
-            min-width: 0;
             white-space: nowrap;
-            letter-spacing: -0.2px;
         }
 
         .day-tab.active {
-            background: #2a7f6e;
-            color: white;
-            box-shadow: 0 4px 8px rgba(42, 127, 110, 0.2);
-        }
-
-        body.light .day-tab {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        body.light .day-tab.active {
             background: #2a7f6e;
             color: white;
         }
@@ -370,7 +351,6 @@
             padding: 24px;
             margin-bottom: 20px;
             display: none;
-            transition: all 0.2s ease;
         }
 
         .day-card.active {
@@ -431,7 +411,6 @@
         .empty-state {
             text-align: center;
             padding: 48px 24px;
-            margin-bottom: 20px;
             background: transparent;
         }
 
@@ -459,63 +438,40 @@
             font-size: 13px;
             padding: 16px 8px;
             color: #9aa0a8;
-            letter-spacing: -0.1px;
         }
 
         /* ===== АНІМАЦІЯ ===== */
-        @keyframes subtlePulse {
+        @keyframes pulse {
             0%, 100% { opacity: 0.8; }
             50% { opacity: 0.5; }
         }
 
         .loading {
-            animation: subtlePulse 1.5s ease-in-out infinite;
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
         /* ===== АДАПТИВНІСТЬ ===== */
         @media (max-width: 480px) {
             body { padding: 16px; }
-            
             .temp-large { font-size: 64px; }
             .weather-icon { font-size: 48px; }
-            
-            .day-selector {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-            }
-            
-            .day-tab {
-                white-space: normal;
-                padding: 10px 4px;
-                font-size: 13px;
-                line-height: 1.3;
-            }
+            .day-tab { font-size: 12px; padding: 10px 2px; }
         }
 
         @media (max-width: 360px) {
-            .day-selector {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .header-right {
-                gap: 8px;
-            }
-            
-            .date-badge {
-                padding: 6px 12px;
-                font-size: 13px;
-            }
+            .day-selector { gap: 4px; }
+            .day-tab { font-size: 11px; padding: 8px 2px; }
+            .date-badge { padding: 6px 12px; font-size: 13px; }
         }
     </style>
 </head>
 <body class="dark">
     <div class="container">
-        <!-- ===== ХЕДЕР ===== -->
+        <!-- Хедер -->
         <div class="header">
             <div class="logo">
                 <span>🌤️</span>
-                <span>weather.pro</span>
+                <span>weather</span>
             </div>
             <div class="header-right">
                 <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
@@ -523,7 +479,7 @@
             </div>
         </div>
 
-        <!-- ===== ПОШУК (ПОРЖНЄ ПОЛЕ) ===== -->
+        <!-- Пошук -->
         <div class="search-section">
             <span class="search-label">🔍 ПОШУК МІСТА</span>
             <input 
@@ -541,55 +497,47 @@
             </button>
         </div>
 
-        <!-- ===== КОНТЕНТ ПОГОДИ (СПОЧАТКУ ПРИХОВАНИЙ) ===== -->
+        <!-- Контент погоди -->
         <div id="weatherContent" style="display: none;">
-            <!-- Поточна погода -->
             <div class="main-card">
                 <div class="city-section">
                     <span class="city-name" id="cityName">Київ</span>
                     <span class="country-badge" id="countryCode">UA</span>
                 </div>
-                
                 <div class="weather-main">
-                    <span class="temp-large" id="temperature">-1°</span>
+                    <span class="temp-large" id="temperature">2°</span>
                     <span class="weather-icon" id="weatherIcon">☁️</span>
                 </div>
-                
-                <div class="weather-desc" id="description">
-                    Хмарно
-                </div>
-                
+                <div class="weather-desc" id="description">Хмарно</div>
                 <div class="details-grid">
                     <div class="detail-card">
                         <div class="detail-label">Відчувається</div>
-                        <div class="detail-value" id="feelsLike">-6°</div>
+                        <div class="detail-value" id="feelsLike">-2°</div>
                     </div>
                     <div class="detail-card">
                         <div class="detail-label">Вітер</div>
-                        <div class="detail-value" id="windSpeed">4.6 м/с</div>
+                        <div class="detail-value" id="windSpeed">4.8 м/с</div>
                     </div>
                     <div class="detail-card">
                         <div class="detail-label">Вологість</div>
-                        <div class="detail-value" id="humidity">94%</div>
+                        <div class="detail-value" id="humidity">97%</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Перемикання днів (БЕЗ ПОЛЗУНКА) -->
+            <!-- Перемикання днів (ТІЛЬКИ 5 КНОПОК, БЕЗ ДУБЛІВ) -->
             <div class="day-selector" id="daySelector"></div>
-
-            <!-- Картки днів -->
             <div id="daysContainer"></div>
         </div>
 
-        <!-- ===== ПУСТИЙ СТАН ===== -->
+        <!-- Пустий стан -->
         <div id="emptyState" class="empty-state">
             <span>🌤️</span>
             <h3>Введіть місто</h3>
-            <p>Отримайте прогноз погоди<br>на 5 днів вперед</p>
+            <p>Отримайте прогноз погоди на 5 днів</p>
         </div>
 
-        <!-- ===== СТАТУС ===== -->
+        <!-- Статус -->
         <div class="status" id="status">
             Введіть місто для пошуку
         </div>
@@ -614,17 +562,17 @@
                 body.classList.remove('dark');
                 body.classList.add('light');
                 toggle.textContent = '☀️';
-                localStorage.setItem('weather_theme', 'light');
+                localStorage.setItem('theme', 'light');
             } else {
                 body.classList.remove('light');
                 body.classList.add('dark');
                 toggle.textContent = '🌙';
-                localStorage.setItem('weather_theme', 'dark');
+                localStorage.setItem('theme', 'dark');
             }
         }
 
-        // Завантажуємо збережену тему
-        const savedTheme = localStorage.getItem('weather_theme') || 'dark';
+        // Завантажуємо тему
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         document.body.classList.add(savedTheme);
         document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
 
@@ -637,17 +585,12 @@
             'дніпро': 'Dnipro', 'dnipro': 'Dnipro',
             'запоріжжя': 'Zaporizhzhia', 'zaporizhzhia': 'Zaporizhzhia',
             'вінниця': 'Vinnytsia', 'vinnytsia': 'Vinnytsia',
-            'полтава': 'Poltava', 'poltava': 'Poltava',
             'лондон': 'London', 'london': 'London',
             'париж': 'Paris', 'paris': 'Paris',
-            'берлін': 'Berlin', 'berlin': 'Berlin',
-            'варшава': 'Warsaw', 'warsaw': 'Warsaw',
-            'прага': 'Prague', 'prague': 'Prague',
-            'відень': 'Vienna', 'vienna': 'Vienna',
-            'нью-йорк': 'New York', 'new york': 'New York',
-            'токіо': 'Tokyo', 'tokyo': 'Tokyo'
+            'берлін': 'Berlin', 'berlin': 'Berlin'
         };
 
+        // ДНІ ТИЖНЯ — БЕЗ ДУБЛІВ! ТІЛЬКИ 7!
         const weekdays = ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пʼятниця', 'Субота'];
         const shortWeekdays = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
         const months = ['січ', 'лют', 'бер', 'кві', 'тра', 'чер', 'лип', 'сер', 'вер', 'жов', 'лис', 'гру'];
@@ -664,11 +607,11 @@
             return '☁️';
         }
 
-        function formatDescription(desc) {
-            return desc.charAt(0).toUpperCase() + desc.slice(1);
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
-        // ========== ОНОВЛЕННЯ ДАТИ ==========
+        // ========== ДАТА ==========
         function updateDate() {
             const now = new Date();
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -689,7 +632,7 @@
             const searchCity = cityMap[city.toLowerCase()] || city;
             
             const statusEl = document.getElementById('status');
-            statusEl.innerHTML = '⏳ Завантаження прогнозу...';
+            statusEl.innerHTML = '⏳ Завантаження...';
             statusEl.classList.add('loading');
 
             try {
@@ -702,21 +645,21 @@
                 
                 const weatherData = await weatherRes.json();
                 
-                // Прогноз на 5 днів
+                // Прогноз
                 const forecastRes = await fetch(
                     `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${API_KEY}&units=metric&lang=uk`
                 );
                 const forecastData = await forecastRes.json();
                 
-                // Показуємо контент, ховаємо пустий стан
+                // Показуємо контент
                 document.getElementById('weatherContent').style.display = 'block';
                 document.getElementById('emptyState').style.display = 'none';
                 
-                // Відображаємо назву міста українською
+                // Назва міста
                 let displayCity = city;
                 for (let [uk, en] of Object.entries(cityMap)) {
                     if (en.toLowerCase() === searchCity.toLowerCase()) {
-                        displayCity = uk.charAt(0).toUpperCase() + uk.slice(1);
+                        displayCity = capitalize(uk);
                         break;
                     }
                 }
@@ -729,44 +672,33 @@
                 document.getElementById('windSpeed').textContent = `${weatherData.wind.speed.toFixed(1)} м/с`;
                 document.getElementById('humidity').textContent = `${weatherData.main.humidity}%`;
                 
-                const currentEmoji = getWeatherEmoji(weatherData.weather[0].id);
-                document.getElementById('weatherIcon').textContent = currentEmoji;
-                document.getElementById('description').textContent = 
-                    formatDescription(weatherData.weather[0].description);
+                const emoji = getWeatherEmoji(weatherData.weather[0].id);
+                document.getElementById('weatherIcon').textContent = emoji;
+                document.getElementById('description').textContent = capitalize(weatherData.weather[0].description);
                 
-                // Генеруємо дні
-                generateDays(forecastData.list);
+                // Генеруємо прогноз
+                generateForecast(forecastData.list);
                 
                 statusEl.innerHTML = '⚡ Оновлено · прогноз на 5 днів';
                 statusEl.classList.remove('loading');
                 
-                // Відправка в Telegram
-                if (window.Telegram?.WebApp) {
-                    Telegram.WebApp.sendData(JSON.stringify({
-                        city: displayCity,
-                        temp: Math.round(weatherData.main.temp),
-                        weather: weatherData.weather[0].description
-                    }));
-                }
-                
             } catch (error) {
                 statusEl.innerHTML = '❌ Місто не знайдено';
                 statusEl.classList.remove('loading');
-                
                 document.getElementById('weatherContent').style.display = 'none';
                 document.getElementById('emptyState').style.display = 'block';
             }
         }
 
-        // ========== ГЕНЕРАЦІЯ ДНІВ ==========
-        function generateDays(forecastList) {
+        // ========== ГЕНЕРАЦІЯ ПРОГНОЗУ ==========
+        function generateForecast(forecastList) {
             const daySelector = document.getElementById('daySelector');
             const daysContainer = document.getElementById('daysContainer');
             
             daySelector.innerHTML = '';
             daysContainer.innerHTML = '';
             
-            // Групуємо прогнози по днях
+            // Групуємо по днях
             const dailyForecasts = {};
             const today = new Date().setHours(0, 0, 0, 0);
             
@@ -791,12 +723,13 @@
             sortedDays.forEach((dayStr, index) => {
                 const dayData = dailyForecasts[dayStr];
                 const date = new Date(dayData[0].dt * 1000);
-                const weekday = shortWeekdays[date.getDay()];
+                const dayOfWeek = date.getDay();
+                const shortDay = shortWeekdays[dayOfWeek];
                 const dayNumber = date.getDate();
                 const month = months[date.getMonth()];
                 
                 // Форматуємо: "Пт 13 лют"
-                const displayText = `${weekday} ${dayNumber} ${month}`;
+                const displayText = `${shortDay} ${dayNumber} ${month}`;
                 
                 // Кнопка дня
                 const tab = document.createElement('button');
@@ -805,15 +738,15 @@
                 tab.onclick = () => selectDay(index);
                 daySelector.appendChild(tab);
                 
-                // Знаходимо найкращий прогноз (близько 12:00)
+                // Знаходимо прогноз на 12:00
                 let bestForecast = dayData[0];
-                let minHourDiff = 24;
+                let minDiff = 24;
                 
                 dayData.forEach(item => {
                     const itemDate = new Date(item.dt * 1000);
-                    const hourDiff = Math.abs(itemDate.getHours() - 12);
-                    if (hourDiff < minHourDiff) {
-                        minHourDiff = hourDiff;
+                    const diff = Math.abs(itemDate.getHours() - 12);
+                    if (diff < minDiff) {
+                        minDiff = diff;
                         bestForecast = item;
                     }
                 });
@@ -821,37 +754,36 @@
                 // Створюємо картку дня
                 const dayCard = document.createElement('div');
                 dayCard.className = `day-card ${index === 0 ? 'active' : ''}`;
-                dayCard.id = `day-${index}`;
                 
-                const emoji = getWeatherEmoji(bestForecast.weather[0].id);
-                const temp = Math.round(bestForecast.main.temp);
-                const feels = Math.round(bestForecast.main.feels_like);
-                const wind = bestForecast.wind.speed.toFixed(1);
-                const humidity = bestForecast.main.humidity;
-                const desc = formatDescription(bestForecast.weather[0].description);
-                const fullWeekday = weekdays[date.getDay()];
+                const forecastEmoji = getWeatherEmoji(bestForecast.weather[0].id);
+                const forecastTemp = Math.round(bestForecast.main.temp);
+                const forecastFeels = Math.round(bestForecast.main.feels_like);
+                const forecastWind = bestForecast.wind.speed.toFixed(1);
+                const forecastHumidity = bestForecast.main.humidity;
+                const forecastDesc = capitalize(bestForecast.weather[0].description);
+                const fullDayName = weekdays[dayOfWeek];
                 
                 dayCard.innerHTML = `
                     <div class="day-header">
-                        <span class="day-title">${fullWeekday}</span>
-                        <span class="day-temp-large">${temp}°</span>
+                        <span class="day-title">${fullDayName}</span>
+                        <span class="day-temp-large">${forecastTemp}°</span>
                     </div>
                     <div class="day-weather-row">
-                        <span class="day-emoji">${emoji}</span>
-                        <span class="day-desc">${desc}</span>
+                        <span class="day-emoji">${forecastEmoji}</span>
+                        <span class="day-desc">${forecastDesc}</span>
                     </div>
                     <div class="day-details">
                         <div class="detail-card">
                             <div class="detail-label">Відчувається</div>
-                            <div class="detail-value">${feels}°</div>
+                            <div class="detail-value">${forecastFeels}°</div>
                         </div>
                         <div class="detail-card">
                             <div class="detail-label">Вітер</div>
-                            <div class="detail-value">${wind} м/с</div>
+                            <div class="detail-value">${forecastWind} м/с</div>
                         </div>
                         <div class="detail-card">
                             <div class="detail-label">Вологість</div>
-                            <div class="detail-value">${humidity}%</div>
+                            <div class="detail-value">${forecastHumidity}%</div>
                         </div>
                     </div>
                 `;
@@ -862,33 +794,24 @@
 
         // ========== ВИБІР ДНЯ ==========
         function selectDay(index) {
-            // Оновлюємо таби
-            document.querySelectorAll('.day-tab').forEach((tab, i) => {
-                if (i === index) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
+            const tabs = document.querySelectorAll('.day-tab');
+            const cards = document.querySelectorAll('.day-card');
+            
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
             });
             
-            // Оновлюємо картки
-            document.querySelectorAll('.day-card').forEach((card, i) => {
-                if (i === index) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === index);
             });
         }
 
         // ========== ПОДІЇ ==========
         document.getElementById('cityInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                getWeather();
-            }
+            if (e.key === 'Enter') getWeather();
         });
 
-        // ========== ІНІЦІАЛІЗАЦІЯ ==========
+        // ========== СТАРТ ==========
         window.onload = () => {
             updateDate();
             document.getElementById('cityInput').focus();
@@ -896,3 +819,4 @@
     </script>
 </body>
 </html>
+
